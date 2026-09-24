@@ -23,7 +23,7 @@ The image and deployment scripts adapt TaskContext's container infrastructure. R
 
 Keep deployment secrets in the sibling unversioned `once-pocketcontext/.envrc.private`, with RaiseContext-specific variable names. Configure Google's authorized redirect URI as `https://raise.pocketcontext.com/api/oauth2-redirect`. A valid Google account alone does not grant access. Provision people and agents through the default `users` collection using the superuser REST API; do not create another auth collection.
 
-The repository and GHCR package may be private. Configure registry authentication on the existing ONCE host before its first pull; do not make the source or package public merely to resolve pull failures.
+The production repository and GHCR package are public by operator choice; the ONCE host pulls anonymously. Application records, credentials, and backups remain private.
 
 ## Build and verification
 
