@@ -1,14 +1,15 @@
-# Implementation sequence
+# Implementation status
 
-1. Finalize the first-release schema and invariants. Select a PocketContext revision, build it, and introduce a compatibility pin with the first passing integration suite.
-2. Implement identities, organizations, people, rounds, opportunities, and participants. Test explicit provisioning, REST and SQL permissions, relations, and uniqueness using synthetic records.
-3. Add introductions, activities, notes, messages, and drafts. Implement attribution, audit history, and revision-checked writes with transaction and concurrency tests.
-4. Add commitments and receipts with tested amendment, cancellation, correction, and currency behavior.
-5. Build the installable agent skill and client. Cover research provenance, meeting preparation, recording outcomes, follow-up drafts, and fundraise review. Test installation independently of a repository checkout.
-6. Add RaiseContext-specific container configuration, CI, backup and restore checks, and deployment documentation. Verify a clean installation against the pinned server.
-7. Deploy a private internal workspace and use it for PocketContext's fundraise. Keep real records outside source control and public examples.
-8. Add an early-access website offering once the core workflow is usable. Update the application selector, analytics allowlist, examples, and Italian and German translations. Run website typecheck, build, translation checks, and relevant browser checks. A demo link requires a deployed and verified synthetic demo.
+The initial application implements the fundraising collections, explicit user provisioning, Google OAuth for existing accounts, SQL allowlists, attribution, audit history, revision-checked writes, and transactionally validated commitments and receipts. See [the data model](data-model.md) for exact invariants and correction semantics.
 
-Public positioning: startup fundraising through an AI assistant, including investor research, introductions, conversations, and next actions. Do not promise investor access, automatic fundraising, or unimplemented integrations.
+The server revision is recorded in `POCKETCONTEXT_VERSION`. Authentication uses PocketBase's default `users` collection for both humans and agents. Container, deployment, and synthetic test files accompany the application; see the README and [deployment instructions](deployment.md) for commands and operational verification.
 
-Repository creation does not deploy infrastructure or publish a website offering.
+The installable skill and client provide authenticated SQL reads and REST writes. Investor research and correspondence remain data for the agent to assess; external message sending is not implemented.
+
+## Follow-on work
+
+- Use the private internal workspace for PocketContext's fundraise and revise workflows from actual usage. Keep actual fundraising data outside source control.
+- Add richer fundraising summaries and investor qualification only when internal use establishes the requirements. Preserve currency and financial status distinctions.
+- Add the early-access website offering as a separate change. Update the application selector, analytics allowlist, examples, and Italian and German translations, then run website typecheck, build, translation checks, and relevant browser checks. A demo link requires a deployed and verified synthetic demo.
+
+Public positioning is startup fundraising through an AI assistant: research, introductions, conversations, and next actions. Do not promise investor access, automatic fundraising, or unimplemented integrations.

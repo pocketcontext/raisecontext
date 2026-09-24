@@ -1,6 +1,6 @@
 # RaiseContext
 
-Read README.md and docs/data-model.md before implementation. This repository is currently a design scaffold, not a runnable application.
+Read README.md and docs/data-model.md before implementation. Run the validation commands in README.md after implementation, auth, skill, deployment, or server-pin changes. CI also checks container smoke and restore behavior.
 
 - Keep the fundraising model application-owned and PocketContext application-independent.
 - Read through authenticated PocketContext schema and SQL endpoints; write through PocketBase REST. Keep SQL connections read-only.
