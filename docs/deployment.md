@@ -11,7 +11,7 @@ The image and deployment scripts adapt TaskContext's container infrastructure. R
 | `BASE_URL` | Public origin; production uses `https://raise.pocketcontext.com`. Also restricts browser origins. |
 | `RAISECONTEXT_SUPERUSER_EMAIL`, `RAISECONTEXT_SUPERUSER_PASSWORD` | Operator provisioning at startup. Production reuses the other applications' operator credentials. |
 | `RAISECONTEXT_GOOGLE_CLIENT_ID`, `RAISECONTEXT_GOOGLE_CLIENT_SECRET` | Google OAuth credentials on the existing `users` auth collection. Both are required together. |
-| `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN` | Restricts Google sign-in to verified accounts in this Workspace domain. Accounts must still be explicitly provisioned. |
+| `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN` | Enables Google just-in-time signup for verified accounts whose hosted domain and email domain match this value. Production uses `pocketcontext.com`. Unset means no automatic signup. |
 | `RAISECONTEXT_TRUSTED_PROXY_HEADER` | Set to `X-Forwarded-For` behind ONCE. |
 | `RAISECONTEXT_RATE_LIMITS` | Image defaults to `true`. |
 | `LITESTREAM_BUCKET`, `LITESTREAM_PATH` | Private replica bucket and RaiseContext-only prefix; use `once-pocketcontext/raisecontext` for this deployment. Never reuse another application's prefix. |
@@ -21,7 +21,7 @@ The image and deployment scripts adapt TaskContext's container infrastructure. R
 | `LITESTREAM_DISABLED` | Exactly `true` disables replication; intended for isolated tests. |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `MAILER_FROM_ADDRESS` | Optional ONCE mail configuration. |
 
-Keep deployment secrets in the sibling unversioned `once-pocketcontext/.envrc.private`, with RaiseContext-specific variable names. Configure Google's authorized redirect URI as `https://raise.pocketcontext.com/api/oauth2-redirect`. A valid Google account alone does not grant access. Provision people and agents through the default `users` collection using the superuser REST API; do not create another auth collection.
+Keep deployment secrets in the sibling unversioned `once-pocketcontext/.envrc.private`, with RaiseContext-specific variable names. Configure Google's authorized redirect URI as `https://raise.pocketcontext.com/api/oauth2-redirect`. Google sign-in automatically creates an account in the default `users` collection when verified Google claims match `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN`. Public REST signup remains locked. Existing accounts keep their IDs; disabled accounts cannot return through Google signup. With the domain unset, only existing provisioned accounts can sign in. Provision password-based agents through the superuser REST API in the same `users` collection; do not create another auth collection.
 
 The production repository and GHCR package are public by operator choice; the ONCE host pulls anonymously. Application records, credentials, and backups remain private.
 

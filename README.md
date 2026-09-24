@@ -6,7 +6,7 @@ Startup fundraising operated through a coding agent, built on [PocketContext](ht
 
 Track rounds, investors, participants, introductions, activities, research, correspondence and drafts. Commitments distinguish indicated interest from signed amounts; receipts track funds actually received. Writes enforce revisions, attribution, transactional audit history, currency consistency and receipt limits. See [the data model](docs/data-model.md).
 
-One deployment serves one startup's shared fundraising workspace. Owners assign work, not private visibility. Only explicitly provisioned accounts can sign in. PocketBase's existing default `users` collection serves both humans and agents; RaiseContext does not create another auth collection. Google Workspace membership alone does not grant access.
+One deployment serves one startup's shared fundraising workspace. Owners assign work, not private visibility. With a trusted Workspace domain configured, verified Google identities in that domain receive an account on first login and shared fundraising access. PocketBase's existing default `users` collection serves both humans and agents; RaiseContext does not create another auth collection. Direct public signup remains blocked.
 
 ## Build and run
 
@@ -30,11 +30,11 @@ Configure a Google OAuth Web application with an Internal audience for your Work
 
 Supply `RAISECONTEXT_GOOGLE_CLIENT_ID`, `RAISECONTEXT_GOOGLE_CLIENT_SECRET` and `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN=pocketcontext.com` through private deployment configuration. Both client values must be supplied together. Google credentials are stored in private application settings and backups.
 
-An operator must first create the intended account in `users` with its Google email. Google login verifies the provider email and Workspace domain and retains that identity. Password login also remains available. Disable an account with the operator-managed `disabled` field to revoke access; account deletion is blocked to preserve attribution. Workspace suspension alone does not revoke an existing application session. Tokens last seven days and the CLI renews active sessions.
+Google login verifies the provider email, Google's verified-email claim, and the exact Workspace domain. With `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN` configured, first login creates a `users` account from those trusted claims. Existing accounts retain their identity, assignments and history; client-supplied account fields cannot grant access. With the domain unset, Google login requires an existing account. Password login remains available for accounts with a configured password. Disable an account with the operator-managed `disabled` field to revoke access; account deletion is blocked to preserve attribution. Workspace suspension alone does not revoke an existing application session. Tokens last seven days and the CLI renews active sessions.
 
 ## Agent client
 
-Install or copy `skills/raisecontext` to the agent's skill directory. The portable client needs Python 3, a server URL and an ordinary provisioned user's email.
+Install or copy `skills/raisecontext` to the agent's skill directory. The portable client needs Python 3, a server URL and an ordinary user's Workspace email.
 
 ```sh
 export RAISECONTEXT_URL=https://raise.pocketcontext.com

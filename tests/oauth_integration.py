@@ -98,8 +98,12 @@ def main():
                 body['createData'] = create_data
             return request('POST', '/api/collections/users/auth-with-oauth2', body, token, expected)
 
-        # Domain membership alone grants no access, even with forged creation data.
-        exchange(expected=(400, 403), create_data=signup)
+        # New identities cannot enter through malformed or forged Google claims.
+        for options in [{'hd': None}, {'hd': 'outside.com'}, {'hd': 'example.com.attacker.test'},
+                        {'verified': False}, {'verified': 'true'}, {'email': 'new@outside.com'},
+                        {'email': 'new@example.com.attacker.test'}]:
+            exchange(**{'email': 'new@example.com', **options}, create_data={**signup, 'hd': 'example.com'}, expected=(400, 403))
+        # Existing explicitly provisioned accounts must keep their identity.
         assert request('GET', '/api/collections/users/records', token=admin)['totalItems'] == 0
         user = request('POST', '/api/collections/users/records', signup, admin)
         for options in [{'hd': None}, {'hd': 'outside.com'}, {'verified': False}, {'verified': 'true'},
@@ -122,9 +126,58 @@ def main():
         request('PATCH', path, {'disabled': False}, admin)
         request('GET', '/api/context/schema', token=token, expected=(401, 403))
         exchange()
-        assert request('GET', '/api/collections/users', token=admin)['createRule'] is None
+        assert request('GET', '/api/collections/users', token=admin)['createRule'] == "@request.context = 'oauth2'"
         assert request('GET', '/api/collections/users/records', token=admin)['totalItems'] == 1
-    print('PASS: explicit Google provisioning, Workspace identity validation, PKCE, identity reuse and revocation')
+        # First verified Workspace login creates a standard users identity and
+        # directory entry, ignoring every untrusted client provisioning field.
+        forged = {**signup, 'id': 'forged000000001', 'disabled': True, 'name': 'Forged', 'email': 'attacker@outside.com'}
+        fresh = exchange(email='new@example.com', create_data=forged)
+        new_user = fresh['record']
+        assert new_user['collectionName'] == 'users' and new_user['id'] != forged['id']
+        assert new_user['email'] == 'new@example.com' and new_user['name'] == 'Google name'
+        assert new_user['verified'] and not new_user['disabled']
+        assert request('GET', '/api/collections/user_directory/records/' + new_user['id'], token=admin)['name'] == 'Google name'
+        assert exchange(email='new@example.com')['record']['id'] == new_user['id']
+        request('POST', '/api/collections/users/auth-with-password', {
+            'identity': 'new@example.com', 'password': signup['password'],
+        }, expected=(400, 401, 403))
+        request('POST', '/api/collections/users/records', signup, token=fresh['token'], expected=(400, 403))
+        assert request('GET', '/api/collections/users/records', token=admin)['totalItems'] == 2
+        new_path = '/api/collections/users/records/' + new_user['id']
+        request('PATCH', new_path, {'disabled': True}, admin)
+        exchange(email='NEW@example.com', subject='new@example.com', expected=(400, 403))
+        request('GET', '/api/context/schema', token=fresh['token'], expected=(401, 403))
+        request('PATCH', new_path, {'disabled': False}, admin)
+        request('GET', '/api/context/schema', token=fresh['token'], expected=(401, 403))
+        assert exchange(email='new@example.com')['record']['id'] == new_user['id']
+    no_domain_checks(args.binary)
+    print('PASS: Google Workspace JIT, trusted identity claims, PKCE, existing identity preservation and revocation')
+
+
+def no_domain_checks(binary):
+    with patch.dict(os.environ, {'RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN': ''}), google_fixture() as (url, codes), server(binary) as request:
+        admin = request('POST', '/api/collections/_superusers/auth-with-password', {
+            'identity': 'admin@example.com', 'password': 'SyntheticAdminPassword123!',
+        })['token']
+        provider = {'name': 'google', 'clientId': 'synthetic-client', 'clientSecret': 'synthetic-secret',
+                    'authURL': url + '/authorize', 'tokenURL': url + '/token', 'userInfoURL': url + '/userinfo'}
+        request('PATCH', '/api/collections/users', {'oauth2': {'enabled': True, 'providers': [provider]}}, admin)
+        def exchange(expected):
+            metadata = request('GET', '/api/collections/users/auth-methods')['oauth2']['providers'][0]
+            code = secrets.token_urlsafe(24)
+            codes[code] = {'challenge': metadata['codeChallenge'], 'user': {
+                'sub': 'existing', 'email': 'existing@example.com', 'email_verified': True, 'hd': 'example.com', 'name': 'Google name',
+            }}
+            return request('POST', '/api/collections/users/auth-with-oauth2', {
+                'provider': 'google', 'code': code, 'redirectURL': REDIRECT, 'codeVerifier': metadata['codeVerifier'],
+            }, expected=expected)
+        exchange((400, 403))
+        assert request('GET', '/api/collections/users/records', token=admin)['totalItems'] == 0
+        existing = request('POST', '/api/collections/users/records', {
+            'email': 'existing@example.com', 'name': 'Existing',
+            'password': 'SyntheticPassword123!', 'passwordConfirm': 'SyntheticPassword123!',
+        }, admin)
+        assert exchange(200)['record']['id'] == existing['id']
 
 
 if __name__ == '__main__':

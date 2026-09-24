@@ -20,7 +20,7 @@ def main():
         assert {c['name'] for c in collections if c['type'] == 'auth'} == {'_superusers', 'users'}
         assert next(c for c in collections if c['name'] == 'users')['id'] == '_pb_users_auth_'
         settings = request('GET', '/api/collections/users', token=admin)
-        assert settings['createRule'] is None and settings['authToken']['duration'] == 604800
+        assert settings['createRule'] == "@request.context = 'oauth2'" and settings['authToken']['duration'] == 604800
         assert settings['oauth2']['enabled']
         assert any(p['name'] == 'google' and p['clientId'] == 'synthetic-client' for p in settings['oauth2']['providers'])
         credentials = {'identity': 'member@example.test', 'password': 'SyntheticMemberPassword123!'}

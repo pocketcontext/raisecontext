@@ -37,10 +37,14 @@ def main():
         assert env['SMTP_PASSWORD'] not in json.dumps(settings)
         collection = request('GET', '/api/collections/users', token=token)
         assert collection['id'] == '_pb_users_auth_'
-        assert collection['oauth2']['enabled'] and collection['createRule'] is None
+        assert collection['oauth2']['enabled'] and collection['createRule'] == "@request.context = 'oauth2'"
         assert collection['passwordAuth']['enabled']
         assert collection['oauth2']['providers'][0]['clientId'] == env['RAISECONTEXT_GOOGLE_CLIENT_ID']
         assert env['RAISECONTEXT_GOOGLE_CLIENT_SECRET'] not in json.dumps(collection)
+        request('POST', '/api/collections/users/records', {
+            'email': 'public@example.test', 'name': 'Public signup',
+            'password': 'SyntheticPublicPassword123!', 'passwordConfirm': 'SyntheticPublicPassword123!',
+        }, expected=(400, 403))
         password = smoke.secret('SyntheticSmokeUser123!')
         user = smoke.provision_user(request.base_url, token, 'smoke@example.test', password)
         client = smoke.Client(request.base_url, 'smoke@example.test', password, None)

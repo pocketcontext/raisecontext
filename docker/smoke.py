@@ -247,6 +247,7 @@ def once_env(extra=None):
         'RAISECONTEXT_SUPERUSER_EMAIL': 'operator@example.test', 'RAISECONTEXT_SUPERUSER_PASSWORD': secret('-' + secrets.token_urlsafe(24)),
         'RAISECONTEXT_GOOGLE_CLIENT_ID': 'image-test.apps.googleusercontent.com',
         'RAISECONTEXT_GOOGLE_CLIENT_SECRET': secret(secrets.token_urlsafe(24)),
+        'RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN': 'example.test',
     }
     env.update(extra or {})
     return env
@@ -275,7 +276,12 @@ def smoke(image, tmp, run_id):
     check(status == 200 and collection['oauth2']['enabled'], 'Google OAuth is enabled after migrations')
     check(collection['oauth2']['providers'][0]['clientId'] == env['RAISECONTEXT_GOOGLE_CLIENT_ID'], 'Google client ID matches the environment')
     check(env['RAISECONTEXT_GOOGLE_CLIENT_SECRET'] not in json.dumps(collection), 'the collection API does not return the Google secret')
-    check(collection['createRule'] is None and collection['passwordAuth']['enabled'], 'explicit-provisioning signup rule and password login are preserved')
+    check(collection['createRule'] == "@request.context = 'oauth2'" and collection['passwordAuth']['enabled'], 'OAuth-only signup rule and password login are preserved')
+
+    status, _, _ = http('POST', base + '/api/collections/users/records',
+                         {'email': 'public@example.test', 'name': 'Public signup',
+                          'password': 'SyntheticPublicPassword123!', 'passwordConfirm': 'SyntheticPublicPassword123!'})
+    check(status in (400, 403), 'public REST signup is denied despite the OAuth-only signup rule')
 
     step('CORS: only BASE_URL is an allowed origin')
     _, reply, _ = http('GET', base + '/api/health', headers={'Origin': env['BASE_URL']})

@@ -49,10 +49,13 @@ function authenticate(e) {
   // verify the existing account using the validated, equivalent Google email.
   if (e.record) user.email = e.record.getString("email");
 
-  // Only operators provision fundraising access; Google domain membership alone
-  // does not grant access to this confidential workspace.
-  if (!e.record) throw new ForbiddenError("A provisioned RaiseContext account is required.");
-  e.createData = {};
+  // Domain configuration explicitly enables Google Workspace onboarding. Without
+  // it, only an existing provisioned identity may authenticate.
+  if (!workspace && !e.record) throw new ForbiddenError("RaiseContext account provisioning is disabled.");
+  // Never trust client-selected IDs, passwords, verification, access flags or
+  // names. Google supplies identity, PocketBase generates the account password.
+  const name = typeof user.name === "string" ? user.name.trim().slice(0, 200) : "";
+  e.createData = {email: email, name: name || email.split("@")[0].slice(0, 200)};
   return e.next();
 }
 

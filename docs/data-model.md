@@ -6,7 +6,7 @@ The initial schema is implemented in `pb_migrations/1790300100_raisecontext.js`.
 
 | Collection | Responsibility |
 | --- | --- |
-| users | Explicitly provisioned humans and agents; excluded from SQL |
+| users | Humans and agents, provisioned by verified Workspace Google login or an operator; excluded from SQL |
 | user_directory | SQL-readable identity IDs and display names |
 | organizations | Investor firms, website, description, archival flag |
 | people | Contacts, optional organization, email, role, archival flag |
@@ -44,7 +44,7 @@ Receipts require a signed commitment. Recorded receipts cannot exceed its amount
 
 ## Access
 
-A deployment serves one startup's shared workspace. Ownership assigns responsibility, not private visibility. Provision only internal users and agents, never external investors. Google OAuth authenticates explicitly provisioned accounts; it does not create them.
+A deployment serves one startup's shared workspace. Ownership assigns responsibility, not private visibility. Provision only internal users and agents, never external investors. Google OAuth creates users on first login only when trusted claims match the configured Workspace domain; existing identities are preserved. Without a configured domain, accounts require operator provisioning.
 
 REST rules independently require an enabled `users` identity. SQL uses explicit column allowlists in `pocketcontext.json`, excluding auth and administrative data. Audit history contains domain record values and is visible to provisioned users. Disabling accounts retains assignments and attribution.
 

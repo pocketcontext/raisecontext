@@ -41,7 +41,7 @@ jobs:
         run: python3 raisecontext/tests/integration.py --binary pocketcontext/bin/pocketcontext
       - name: Test authentication and deployment settings
         run: python3 raisecontext/tests/auth.py --binary pocketcontext/bin/pocketcontext
-      - name: Test Google OAuth claims and explicit provisioning
+      - name: Test Google OAuth claims and Workspace signup
         run: python3 raisecontext/tests/oauth_integration.py --binary pocketcontext/bin/pocketcontext
       - name: Test first-start deployment settings
         run: python3 raisecontext/tests/deploy.py --binary pocketcontext/bin/pocketcontext

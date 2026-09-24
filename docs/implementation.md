@@ -1,6 +1,6 @@
 # Implementation status
 
-The initial application implements the fundraising collections, explicit user provisioning, Google OAuth for existing accounts, SQL allowlists, attribution, audit history, revision-checked writes, and transactionally validated commitments and receipts. See [the data model](data-model.md) for exact invariants and correction semantics.
+The initial application implements the fundraising collections, operator provisioning and verified Google Workspace JIT, SQL allowlists, attribution, audit history, revision-checked writes, and transactionally validated commitments and receipts. See [the data model](data-model.md) for exact invariants and correction semantics.
 
 The server revision is recorded in `POCKETCONTEXT_VERSION`. Authentication uses PocketBase's default `users` collection for both humans and agents. Container, deployment, and synthetic test files accompany the application; see the README and [deployment instructions](deployment.md) for commands and operational verification.
 
