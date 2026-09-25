@@ -34,14 +34,14 @@ Google login verifies the provider email, Google's verified-email claim, and the
 
 ## Agent client
 
-Install or copy `skills/raisecontext` to the agent's skill directory. The portable client needs Python 3, a server URL and an ordinary user's Workspace email.
+Install or copy `skills/raisecontext` to the agent's skill directory. The portable client needs Python 3, a server URL and an ordinary user's Workspace email. Replace `/absolute/path/to/raisecontext-skill` below with the directory containing the installed `SKILL.md`; these commands work from any working directory.
 
 ```sh
 export RAISECONTEXT_URL=https://raise.pocketcontext.com
 export RAISECONTEXT_USER_EMAIL=you@pocketcontext.com
-python3 skills/raisecontext/scripts/rc.py login --google
-python3 skills/raisecontext/scripts/rc.py whoami
-python3 skills/raisecontext/scripts/rc.py check
+python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" login --google
+python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" whoami
+python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" check
 ```
 
 Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token in a private cache; provider tokens are not retained.
