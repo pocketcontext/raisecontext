@@ -22,3 +22,7 @@ Store proposed correspondence in `drafts`. `messages` means actual correspondenc
 Financial reports separate proposed amounts, indicated interest, signed commitments, and recorded receipts. Do not add these categories together. Never sum different currencies without an explicit conversion policy. Check truncation and narrow or paginate queries before claiming completeness.
 
 For SSH login, forward port 8765 from the browser machine with `ssh -L 8765:127.0.0.1:8765 <host>`, then use the printed login URL. Tokens are cached privately by server and email. `logout` clears the local cache; account disablement is the operator's revocation mechanism.
+
+## Optional performance tracing
+
+When the user requests tracing, follow [request tracing](references/tracing.md). Use the shared ObserveContext wrapper; SQL text requires separate explicit opt-in. Ordinary commands remain unchanged.

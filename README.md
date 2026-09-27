@@ -54,6 +54,7 @@ All tests use synthetic records and isolated temporary databases.
 
 ```sh
 python3 tests/integration.py --binary /absolute/path/to/pocketcontext
+python3 tests/tracing.py --binary /absolute/path/to/pinned/pocketcontext
 python3 tests/auth.py --binary /absolute/path/to/pocketcontext
 python3 tests/oauth_integration.py --binary /absolute/path/to/pocketcontext
 python3 tests/skill.py --binary /absolute/path/to/pocketcontext
@@ -71,3 +72,7 @@ See [deployment instructions](docs/deployment.md). Disable ONCE automatic update
 RaiseContext does not supply an investor database, automatic message sending, cap-table management, legal document generation or document hosting. Store external document references. Website enquiries about buying RaiseContext remain in DealContext. A public website offering and demo are separate work.
 
 Authentication/client and deployment patterns were adapted from the sibling TaskContext application; the domain schema is independent.
+
+## Request observability
+
+The pinned server enables an authenticated, bounded in-memory trace buffer for `raisecontext`. Collection is client opt-in; ordinary commands produce no traces. See [optional skill tracing](skills/raisecontext/references/tracing.md) for separate ObserveContext login, private upload, SQL-text consent, delivery retries and measurement limits. No ObserveContext credentials are installed on this server.

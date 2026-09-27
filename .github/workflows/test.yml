@@ -49,3 +49,5 @@ jobs:
         run: python3 raisecontext/tests/skill.py --binary pocketcontext/bin/pocketcontext
       - name: Test OAuth client
         run: python3 raisecontext/tests/oauth.py
+      - name: Test opt-in trace isolation
+        run: python3 raisecontext/tests/tracing.py --binary pocketcontext/bin/pocketcontext
