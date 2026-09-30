@@ -16,3 +16,5 @@ Read README.md and docs/data-model.md before implementation. Run the validation 
 - Before claiming compatibility, pin a tested PocketContext commit in POCKETCONTEXT_VERSION and document the build and test commands.
 - Before enabling deployment, configure RaiseContext-specific image names, credentials, backup destinations, and health targets. Never inherit another application's deployment target.
 - Document and run checks appropriate to each implemented feature. Do not claim unimplemented commands or features work.
+
+Reader changes: run `pnpm typecheck`, `pnpm test`, `pnpm build`, and `pnpm e2e` in `ui/`, then `python3 tests/reader.py --binary /absolute/path/to/pinned/pocketcontext --browser`. Keep reader queries within exported SQL, relationships explicit, and tokens/browser test artifacts outside Git.

@@ -26,3 +26,7 @@ For SSH login, forward port 8765 from the browser machine with `ssh -L 8765:127.
 ## Optional performance tracing
 
 When the user requests tracing, follow [request tracing](references/tracing.md). Use the shared ObserveContext wrapper; SQL text requires separate explicit opt-in. Ordinary commands remain unchanged.
+
+## Human record links
+
+Use the configured RaiseContext origin followed by `/#/<collection>/<record-id>` for authorized human navigation. These links show current records, not fixed historical evidence. Never include tokens in links or private record values in labels shared beyond the workspace.
