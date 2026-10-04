@@ -12,6 +12,7 @@ from integration import ROOT, server
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--binary',required=True)
+parser.add_argument('--client', help='Executable release launcher to exercise; package mutation checks still use the local test copy')
 parser.add_argument('--write-schema',action='store_true')
 args=parser.parse_args()
 with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raisecontext-skill-') as tmp:
@@ -27,9 +28,10 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
     assert json.loads(snapshot.read_text())==schema,'Schema changed; review and regenerate snapshot'
     skill=Path(tmp)/'portable'
     shutil.copytree(ROOT/'skills/raisecontext',skill)
-    env={**os.environ,'HOME':tmp,'XDG_CACHE_HOME':str(Path(tmp)/'cache'),'RAISECONTEXT_URL':request.base_url,'RAISECONTEXT_USER_EMAIL':'skill@example.com','RAISECONTEXT_USER_PASSWORD':password}
+    env={**os.environ,'UV_PYTHON':sys.executable,'UV_CACHE_DIR':str(Path(tmp)/'uv-cache'),'HOME':tmp,'XDG_CACHE_HOME':str(Path(tmp)/'cache'),'RAISECONTEXT_URL':request.base_url,'RAISECONTEXT_USER_EMAIL':'skill@example.com','RAISECONTEXT_USER_PASSWORD':password}
     def cli(*argv,expected=0):
-        result=subprocess.run([sys.executable,str(skill/'raisecontext'),*argv],env=env,cwd=tmp,capture_output=True,text=True)
+        command=[str(Path(args.client).resolve())] if args.client else [sys.executable,str(skill/'raisecontext')]
+        result=subprocess.run([*command,*argv],env=env,cwd=tmp,capture_output=True,text=True)
         assert password not in result.stdout+result.stderr and token not in result.stdout+result.stderr
         assert result.returncode==expected,(argv,result.stdout,result.stderr)
         return result.stdout
