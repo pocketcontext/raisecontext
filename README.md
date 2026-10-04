@@ -39,9 +39,9 @@ Install or copy `skills/raisecontext` to the agent's skill directory. The portab
 ```sh
 export RAISECONTEXT_URL=https://raise.pocketcontext.com
 export RAISECONTEXT_USER_EMAIL=you@pocketcontext.com
-python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" login --google
-python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" whoami
-python3 "/absolute/path/to/raisecontext-skill/scripts/rc.py" check
+"/absolute/path/to/raisecontext-skill/raisecontext" login --google
+"/absolute/path/to/raisecontext-skill/raisecontext" whoami
+"/absolute/path/to/raisecontext-skill/raisecontext" check
 ```
 
 Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token in a private cache; provider tokens are not retained.
@@ -129,3 +129,9 @@ mocked browser tests additionally cover query escaping, malformed routes, relati
 labels, and inert Markdown. Generated assets are not committed.
 For browser Google OAuth, register the application's own
 `https://<application-host>/api/oauth2-redirect` URI in its existing OAuth client.
+
+## Packaged CLI development
+
+Install uv, then run `uv venv` and `uv pip install -e .`. Activate `.venv` before running the Python validation commands above. The full-name command is `raisecontext`; old script paths and short aliases are removed. The installed skill launcher requires uv and Python 3.11 or later and fetches its package at a full Git commit. Initial installation requires network access.
+
+The implementation and bundled schema live in `src/raisecontext_client/`; keep its schema snapshot identical to `skills/raisecontext/references/schema.json`. Publish and test the package commit before updating the launcher to that commit. The ObserveContext dependency is pinned separately. Tracing is inactive unless explicitly enabled by `observecontext capture -- raisecontext ...`; capture failures must preserve the command result.

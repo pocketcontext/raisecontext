@@ -1,0 +1,9 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["raisecontext-client @ git+https://github.com/pocketcontext/raisecontext.git@40a1fdb69478758e92470a12216358763ea4077a"]
+# ///
+from raisecontext_client.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

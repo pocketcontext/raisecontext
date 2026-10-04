@@ -1,0 +1,724 @@
+{
+  "permissionModel": "shared",
+  "limits": {
+    "maxBytes": 1048576,
+    "timeoutMs": 2000,
+    "maxRows": 500
+  },
+  "tables": [
+    {
+      "name": "activities",
+      "columns": [
+        {
+          "name": "body",
+          "type": "TEXT"
+        },
+        {
+          "name": "completed_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "owner",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "scheduled_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "title",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "audit_log",
+      "columns": [
+        {
+          "name": "action",
+          "type": "TEXT"
+        },
+        {
+          "name": "actor",
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_type",
+          "type": "TEXT"
+        },
+        {
+          "name": "changes",
+          "type": "JSON"
+        },
+        {
+          "name": "collection",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "record",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "commitments",
+      "columns": [
+        {
+          "name": "amount_minor",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "currency",
+          "type": "TEXT"
+        },
+        {
+          "name": "evidence",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "signed_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "drafts",
+      "columns": [
+        {
+          "name": "body",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "subject",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "introductions",
+      "columns": [
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "evidence",
+          "type": "TEXT"
+        },
+        {
+          "name": "follow_up_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "introducer",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "source",
+          "type": "TEXT"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "target",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "messages",
+      "columns": [
+        {
+          "name": "body",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "direction",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "occurred_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "source",
+          "type": "TEXT"
+        },
+        {
+          "name": "subject",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "notes",
+      "columns": [
+        {
+          "name": "body",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "source",
+          "type": "TEXT"
+        },
+        {
+          "name": "title",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "verified_at",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "opportunities",
+      "columns": [
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "currency",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "next_action",
+          "type": "TEXT"
+        },
+        {
+          "name": "next_action_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "organization",
+          "type": "TEXT"
+        },
+        {
+          "name": "owner",
+          "type": "TEXT"
+        },
+        {
+          "name": "pass_reason",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "proposed_known",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "proposed_minor",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "round",
+          "type": "TEXT"
+        },
+        {
+          "name": "stage",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "opportunity_participants",
+      "columns": [
+        {
+          "name": "active",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "opportunity",
+          "type": "TEXT"
+        },
+        {
+          "name": "person",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "role",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "organizations",
+      "columns": [
+        {
+          "name": "archived",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "description",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "website",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "people",
+      "columns": [
+        {
+          "name": "archived",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "email",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "type": "TEXT"
+        },
+        {
+          "name": "organization",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "role",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "receipts",
+      "columns": [
+        {
+          "name": "amount_minor",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "commitment",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "currency",
+          "type": "TEXT"
+        },
+        {
+          "name": "evidence",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "void_reason",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "rounds",
+      "columns": [
+        {
+          "name": "closed_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "created",
+          "type": "TEXT"
+        },
+        {
+          "name": "created_by",
+          "type": "TEXT"
+        },
+        {
+          "name": "currency",
+          "type": "TEXT"
+        },
+        {
+          "name": "description",
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "type": "TEXT"
+        },
+        {
+          "name": "opened_at",
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "status",
+          "type": "TEXT"
+        },
+        {
+          "name": "target_minor",
+          "type": "NUMERIC"
+        },
+        {
+          "name": "updated",
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_by",
+          "type": "TEXT"
+        }
+      ]
+    },
+    {
+      "name": "user_directory",
+      "columns": [
+        {
+          "name": "id",
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "type": "TEXT"
+        }
+      ]
+    }
+  ]
+}

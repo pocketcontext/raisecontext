@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 from integration import ROOT, server
 
@@ -20,13 +21,15 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
     token=request('POST','/api/collections/users/auth-with-password',{'identity':'skill@example.com','password':password})['token']
     schema=request('GET','/api/context/schema',token=token)
     snapshot=ROOT/'skills/raisecontext/references/schema.json'
-    if args.write_schema: snapshot.write_text(json.dumps(schema,indent=2)+'\n')
+    if args.write_schema:
+        snapshot.write_text(json.dumps(schema,indent=2)+'\n')
+        (ROOT/'src/raisecontext_client/schema.json').write_text(snapshot.read_text())
     assert json.loads(snapshot.read_text())==schema,'Schema changed; review and regenerate snapshot'
     skill=Path(tmp)/'portable'
     shutil.copytree(ROOT/'skills/raisecontext',skill)
     env={**os.environ,'HOME':tmp,'XDG_CACHE_HOME':str(Path(tmp)/'cache'),'RAISECONTEXT_URL':request.base_url,'RAISECONTEXT_USER_EMAIL':'skill@example.com','RAISECONTEXT_USER_PASSWORD':password}
     def cli(*argv,expected=0):
-        result=subprocess.run(['python3',str(skill/'scripts/rc.py'),*argv],env=env,cwd=tmp,capture_output=True,text=True)
+        result=subprocess.run([sys.executable,str(skill/'raisecontext'),*argv],env=env,cwd=tmp,capture_output=True,text=True)
         assert password not in result.stdout+result.stderr and token not in result.stdout+result.stderr
         assert result.returncode==expected,(argv,result.stdout,result.stderr)
         return result.stdout

@@ -5,7 +5,7 @@ description: Operate a RaiseContext startup fundraising workspace, including inv
 
 # RaiseContext
 
-Paths in this file are relative to the directory containing this installed `SKILL.md`. Resolve `scripts/rc.py` there and call it with Python 3 by its full absolute path from any working directory. Before reporting the client missing, check that exact location, including when the skill is installed under a hidden directory such as `.agents`.
+Paths in this file are relative to the directory containing this installed `SKILL.md`. Resolve `raisecontext` there and call it directly by its full absolute path (requires uv and Python 3.11 or later) from any working directory. Before reporting the client missing, check that exact location, including when the skill is installed under a hidden directory such as `.agents`.
 
 Configure `RAISECONTEXT_URL` and `RAISECONTEXT_USER_EMAIL`. Run `login --google` for Google SSO; optional `RAISECONTEXT_USER_PASSWORD` supports password login. Use an ordinary `users` identity, never operator credentials. When Workspace JIT is configured, verified Google login creates the account on first use; otherwise an operator must provision it. If configuration is missing, ask for it rather than searching private files.
 
