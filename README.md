@@ -233,3 +233,13 @@ existing `COLORS_PROFILE`; clearing it is not the pause mechanism. Resume only
 when a deployment is intended by setting `CONTEXT_DEPLOY_PAUSED=false` (or deleting
 that variable). The pause applies to newly evaluated jobs; separately finish or
 cancel any deployment already running before treating the host as fenced.
+
+## Strict container runtime
+
+The container now requires separate primary S3 and Litestream storage and explicit
+fresh-install initialization. See [container runtime](docs/container-runtime.md)
+for startup, staged verified recovery, maintenance and validation requirements.
+Local direct-server development may still use local storage. The old deployment
+is retired; fresh deployment is outside this change.
+
+See [CI and deployment](docs/ci-and-deployment.md) for common release controls.

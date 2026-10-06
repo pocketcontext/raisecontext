@@ -1,3 +1,6 @@
+> The old deployment is retired. Follow [container runtime](container-runtime.md)
+> and [CI and deployment](ci-and-deployment.md) for the current architecture.
+
 # Container and deployment
 
 RaiseContext uses the PocketContext revision in `POCKETCONTEXT_VERSION`. The image serves HTTP on port 80, offers database-backed `GET /up`, and stores state in `/storage/pb_data`. It runs PocketContext under tini and Litestream, restoring a missing database before startup. A failed restore prevents startup.
@@ -14,13 +17,13 @@ The image and deployment scripts adapt TaskContext's container infrastructure. R
 | `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN` | Enables Google just-in-time signup for verified accounts whose hosted domain and email domain match this value. Production uses `pocketcontext.com`. Unset means no automatic signup. |
 | `RAISECONTEXT_TRUSTED_PROXY_HEADER` | Set to `X-Forwarded-For` behind ONCE. |
 | `RAISECONTEXT_RATE_LIMITS` | Image defaults to `true`. |
-| `RAISECONTEXT_S3_BUCKET`, `RAISECONTEXT_S3_ENDPOINT`, `RAISECONTEXT_S3_REGION`, `RAISECONTEXT_S3_ACCESS_KEY_ID`, `RAISECONTEXT_S3_SECRET_ACCESS_KEY` | Optional complete primary file storage configuration; dedicated private bucket and credentials separate from replicas. Does not migrate existing files. |
+| `RAISECONTEXT_S3_BUCKET`, `RAISECONTEXT_S3_ENDPOINT`, `RAISECONTEXT_S3_REGION`, `RAISECONTEXT_S3_ACCESS_KEY_ID`, `RAISECONTEXT_S3_SECRET_ACCESS_KEY` | Required complete primary file storage configuration; dedicated private bucket and credentials separate from replicas. Does not migrate existing files. |
 | `RAISECONTEXT_S3_FORCE_PATH_STYLE` | Optional `true` (default) or `false`; requires complete primary storage configuration. |
 | `LITESTREAM_BUCKET`, `LITESTREAM_PATH` | Private replica bucket and RaiseContext-only prefix; use `once-pocketcontext/raisecontext` for this deployment. Never reuse another application's prefix. |
 | `LITESTREAM_ACCESS_KEY_ID`, `LITESTREAM_SECRET_ACCESS_KEY` | Credentials for the replica. |
 | `LITESTREAM_ENDPOINT`, `LITESTREAM_REGION` | S3-compatible endpoint and region. |
 | `LITESTREAM_SYNC_INTERVAL` | Defaults to `10s`. |
-| `LITESTREAM_DISABLED` | Exactly `true` disables replication; intended for isolated tests. |
+| `LITESTREAM_DISABLED` | Unsupported; container replication is mandatory. |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `MAILER_FROM_ADDRESS` | Optional ONCE mail configuration. |
 
 Keep deployment secrets in the sibling unversioned `once-pocketcontext/.envrc.private`, with RaiseContext-specific variable names. Configure Google's authorized redirect URI as `https://raise.pocketcontext.com/api/oauth2-redirect`. Google sign-in automatically creates an account in the default `users` collection when verified Google claims match `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN`. Public REST signup remains locked. Existing accounts keep their IDs; disabled accounts cannot return through Google signup. With the domain unset, only existing provisioned accounts can sign in. Provision password-based agents through the superuser REST API in the same `users` collection; do not create another auth collection.
@@ -57,8 +60,7 @@ All tests use synthetic records and disposable storage. The restore drill checks
 
 CI gates publication to `ghcr.io/pocketcontext/raisecontext` on integration, authentication, container startup, persistence, and restore tests. Main publishes native AMD64 and ARM64 images with `latest` and commit tags.
 
-Keep ONCE automatic updates disabled. An ordinary ONCE update can overlap containers, which risks two SQLite and Litestream writers against one volume and replica. Pull first, gracefully stop the exact RaiseContext container, require exit status zero, then update it. Sibling applications remain running. Updates briefly interrupt availability.
-
-`deploy/deploy-raisecontext.py` implements this fixed-target sequence with a lock and conditional recovery. It accepts no arguments and only targets `raise.pocketcontext.com` with `ghcr.io/pocketcontext/raisecontext`. Install its forced-command SSH hook from a trusted copy with `sudo python3 deploy/install.py`. The installer expects an existing RaiseContext deployment key, preserves other keys, and validates its narrowly scoped sudoers entry.
-
-Optional continuous deployment requires repository variable `COLORS_PROFILE` naming a GitHub environment with `SSH_PRIVATE_KEY`, `SERVER_IP`, `SERVER_USER`, and pinned `SSH_KNOWN_HOSTS`. Install the safe hook before enabling that variable. Reinstall the hook if scaffold provisioning rewrites the deployment keys. CI verifies public `/up` after deployment; health establishes database availability, not the deployed source revision.
+The old deployment and local deployment wrappers are retired. See
+[CI and deployment](ci-and-deployment.md) for future guarded deployment.
+No fresh deployment is included in this source upgrade. Keep exactly one writer
+and replica publisher; a recovery test must never target an active replica.
