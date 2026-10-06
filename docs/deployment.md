@@ -14,6 +14,8 @@ The image and deployment scripts adapt TaskContext's container infrastructure. R
 | `RAISECONTEXT_GOOGLE_WORKSPACE_DOMAIN` | Enables Google just-in-time signup for verified accounts whose hosted domain and email domain match this value. Production uses `pocketcontext.com`. Unset means no automatic signup. |
 | `RAISECONTEXT_TRUSTED_PROXY_HEADER` | Set to `X-Forwarded-For` behind ONCE. |
 | `RAISECONTEXT_RATE_LIMITS` | Image defaults to `true`. |
+| `RAISECONTEXT_S3_BUCKET`, `RAISECONTEXT_S3_ENDPOINT`, `RAISECONTEXT_S3_REGION`, `RAISECONTEXT_S3_ACCESS_KEY_ID`, `RAISECONTEXT_S3_SECRET_ACCESS_KEY` | Optional complete primary file storage configuration; dedicated private bucket and credentials separate from replicas. Does not migrate existing files. |
+| `RAISECONTEXT_S3_FORCE_PATH_STYLE` | Optional `true` (default) or `false`; requires complete primary storage configuration. |
 | `LITESTREAM_BUCKET`, `LITESTREAM_PATH` | Private replica bucket and RaiseContext-only prefix; use `once-pocketcontext/raisecontext` for this deployment. Never reuse another application's prefix. |
 | `LITESTREAM_ACCESS_KEY_ID`, `LITESTREAM_SECRET_ACCESS_KEY` | Credentials for the replica. |
 | `LITESTREAM_ENDPOINT`, `LITESTREAM_REGION` | S3-compatible endpoint and region. |
