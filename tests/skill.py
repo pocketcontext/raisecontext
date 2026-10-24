@@ -28,7 +28,8 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
     assert json.loads(snapshot.read_text())==schema,'Schema changed; review and regenerate snapshot'
     skill=Path(tmp)/'portable'
     shutil.copytree(ROOT/'skills/raisecontext',skill)
-    env={**os.environ,'UV_PYTHON':sys.executable,'UV_CACHE_DIR':str(Path(tmp)/'uv-cache'),'HOME':tmp,'XDG_CACHE_HOME':str(Path(tmp)/'cache'),'RAISECONTEXT_URL':request.base_url,'RAISECONTEXT_USER_EMAIL':'skill@example.com','RAISECONTEXT_USER_PASSWORD':password}
+    env={**os.environ,'UV_PYTHON':sys.executable,'UV_CACHE_DIR':str(Path(tmp)/'uv-cache'),'HOME':tmp,'XDG_CACHE_HOME':str(Path(tmp)/'cache'),'XDG_STATE_HOME':str(Path(tmp)/'state'),'RAISECONTEXT_URL':request.base_url,'RAISECONTEXT_USER_EMAIL':'skill@example.com','RAISECONTEXT_USER_PASSWORD':password}
+    env.pop('RAISECONTEXT_SESSION_DIR',None)
     def cli(*argv,expected=0):
         command=[str(Path(args.client).resolve())] if args.client else [sys.executable,str(skill/'raisecontext')]
         result=subprocess.run([*command,*argv],env=env,cwd=tmp,capture_output=True,text=True)
@@ -36,6 +37,7 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
         assert result.returncode==expected,(argv,result.stdout,result.stderr)
         return result.stdout
     cli('whoami');cli('check')
+    assert len(list((Path(tmp)/'state/raisecontext').glob('*.json')))==1 and not (Path(tmp)/'cache/raisecontext').exists()
     org=json.loads(cli('create','organizations','{"name":"Synthetic investor"}'))
     row=json.loads(cli('get','organizations',org['id']))
     assert row['name']=='Synthetic investor'
@@ -47,4 +49,5 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
     cli('batch',json.dumps([{'method':'POST','url':'/api/collections/organizations/records','body':{'name':'Batch synthetic investor'}}]))
     cli('batch',json.dumps([{'method':'POST','url':'/api/collections/users/records','body':{}}]),expected=2)
     cli('logout')
+    assert not list((Path(tmp)/'state/raisecontext').glob('*.json'))
 print('Portable skill and schema checks passed.')

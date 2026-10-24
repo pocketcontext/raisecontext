@@ -21,7 +21,7 @@ Store proposed correspondence in `drafts`. `messages` means actual correspondenc
 
 Financial reports separate proposed amounts, indicated interest, signed commitments, and recorded receipts. Do not add these categories together. Never sum different currencies without an explicit conversion policy. Check truncation and narrow or paginate queries before claiming completeness.
 
-For SSH login, forward port 8765 from the browser machine with `ssh -L 8765:127.0.0.1:8765 <host>`, then use the printed login URL. Tokens are cached privately by server and email. `logout` clears the local cache; account disablement is the operator's revocation mechanism.
+For SSH login, forward port 8765 from the browser machine with `ssh -L 8765:127.0.0.1:8765 <host>`, then use the printed login URL. The session token is saved privately by server and email in `$XDG_STATE_HOME/raisecontext/` (default `~/.local/state/raisecontext/`), or in `RAISECONTEXT_SESSION_DIR` when set, so clearing `~/.cache` does not sign you out; a session left in `~/.cache/raisecontext/` by an older client is moved there on first use. `logout` removes both; account disablement is the operator's revocation mechanism.
 
 ## Optional performance tracing
 

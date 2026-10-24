@@ -44,7 +44,7 @@ export RAISECONTEXT_USER_EMAIL=you@pocketcontext.com
 "/absolute/path/to/raisecontext-skill/raisecontext" check
 ```
 
-Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token in a private cache; provider tokens are not retained.
+Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token, with mode 0600, in `$XDG_STATE_HOME/raisecontext/` (default `~/.local/state/raisecontext/`, or `RAISECONTEXT_SESSION_DIR` when set), so clearing `~/.cache` does not sign you out; provider tokens are not retained. A session left in `~/.cache/raisecontext/` by an older client is moved there on first use, and `logout` removes both.
 
 Reads use authenticated schema and read-only SQL endpoints. Writes use PocketBase REST. Updates include `expected_revision`; stale writes return 409. Related writes can use transactional batches. Drafting or recording a message does not send it.
 
