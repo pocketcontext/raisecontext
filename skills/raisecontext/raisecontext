@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["raisecontext-client @ git+https://github.com/pocketcontext/raisecontext.git@ee24022c62272d96eeac593eb71b89116881546e"]
+# dependencies = ["raisecontext-client @ git+https://github.com/pocketcontext/raisecontext.git@6d940f7d1f39dffc08c3495d0ec2bf15d40e1c82"]
 # ///
 from raisecontext_client.cli import main
 
