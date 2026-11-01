@@ -37,14 +37,12 @@ Google login verifies the provider email, Google's verified-email claim, and the
 Install or copy `skills/raisecontext` to the agent's skill directory. The portable client needs Python 3, a server URL and an ordinary user's Workspace email. Replace `/absolute/path/to/raisecontext-skill` below with the directory containing the installed `SKILL.md`; these commands work from any working directory.
 
 ```sh
-export RAISECONTEXT_URL=https://raise.pocketcontext.com
-export RAISECONTEXT_USER_EMAIL=you@pocketcontext.com
-"/absolute/path/to/raisecontext-skill/raisecontext" login --google
+"/absolute/path/to/raisecontext-skill/raisecontext" login --google --url https://your-server.example --email you@example.com
 "/absolute/path/to/raisecontext-skill/raisecontext" whoami
 "/absolute/path/to/raisecontext-skill/raisecontext" check
 ```
 
-Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token, with mode 0600, in `$XDG_STATE_HOME/raisecontext/` (default `~/.local/state/raisecontext/`, or `RAISECONTEXT_SESSION_DIR` when set), so clearing `~/.cache` does not sign you out; provider tokens are not retained. A session left in `~/.cache/raisecontext/` by an older client is moved there on first use, and `logout` removes both.
+Optional `RAISECONTEXT_USER_PASSWORD` enables password authentication. Never use superuser credentials in the agent client. For SSH login, forward port 8765 from the browser machine. The client stores only the application token, with mode 0600, in `$XDG_STATE_HOME/raisecontext/` (default `~/.local/state/raisecontext/`, or `RAISECONTEXT_SESSION_DIR` when set), so clearing `~/.cache` does not sign you out; provider tokens are not retained. `logout` removes the selected local token and retains settings.
 
 Reads use authenticated schema and read-only SQL endpoints. Writes use PocketBase REST. Updates include `expected_revision`; stale writes return 409. Related writes can use transactional batches. Drafting or recording a message does not send it.
 
@@ -59,6 +57,7 @@ python3 tests/auth.py --binary /absolute/path/to/pocketcontext
 python3 tests/oauth_integration.py --binary /absolute/path/to/pocketcontext
 python3 tests/skill.py --binary /absolute/path/to/pocketcontext
 python3 tests/deploy.py --binary /absolute/path/to/pocketcontext
+python3 tests/configuration.py
 python3 tests/oauth.py
 python3 tests/deploy_workflow.py
 ```
@@ -244,3 +243,11 @@ Local direct-server development may still use local storage. The old deployment
 is retired; fresh deployment is outside this change.
 
 See [CI and deployment](docs/ci-and-deployment.md) for common release controls.
+
+## Saved CLI login settings
+
+Sign in once with `raisecontext login --google --url https://your-server.example --email you@example.com`, or use `--password` with `RAISECONTEXT_USER_PASSWORD` for a provisioned password account. The password is supplied through the environment, never as a CLI argument.
+
+URL and email resolve from CLI options, then `RAISECONTEXT_URL` / `RAISECONTEXT_USER_EMAIL`, then saved defaults. `--url` and `--email` work before or after the command. Later commands need no URL/email exports. Successful explicit login writes `default.json` containing only URL and email alongside the per-account token file in `$XDG_STATE_HOME/raisecontext/` (default `~/.local/state/raisecontext/`), or `RAISECONTEXT_SESSION_DIR`. Files use mode 0600 and the directory 0700. Ordinary commands and token refresh never change the default account. Tokens are selected only for the exact resolved server/email pair.
+
+`raisecontext logout` removes the selected token and retains settings for the next login. `raisecontext logout --forget` also removes the default when it matches that account; other accounts remain untouched. Old cache sessions are not migrated: sign in again. A malformed or unsafe default file must be fixed or removed before continuing.
