@@ -36,8 +36,12 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
         assert password not in result.stdout+result.stderr and token not in result.stdout+result.stderr
         assert result.returncode==expected,(argv,result.stdout,result.stderr)
         return result.stdout
+    env.pop('RAISECONTEXT_URL')
+    env.pop('RAISECONTEXT_USER_EMAIL')
+    cli('login', '--password', '--url', request.base_url, '--email', 'skill@example.com')
+    env.pop('RAISECONTEXT_USER_PASSWORD')
     cli('whoami');cli('check')
-    assert len(list((Path(tmp)/'state/raisecontext').glob('*.json')))==1 and not (Path(tmp)/'cache/raisecontext').exists()
+    assert len(list((Path(tmp)/'state/raisecontext').glob('*.json')))==2 and not (Path(tmp)/'cache/raisecontext').exists()
     org=json.loads(cli('create','organizations','{"name":"Synthetic investor"}'))
     row=json.loads(cli('get','organizations',org['id']))
     assert row['name']=='Synthetic investor'
@@ -49,5 +53,7 @@ with server(args.binary) as request, tempfile.TemporaryDirectory(prefix='raiseco
     cli('batch',json.dumps([{'method':'POST','url':'/api/collections/organizations/records','body':{'name':'Batch synthetic investor'}}]))
     cli('batch',json.dumps([{'method':'POST','url':'/api/collections/users/records','body':{}}]),expected=2)
     cli('logout')
+    assert [p.name for p in (Path(tmp)/'state/raisecontext').glob('*.json')] == ['default.json']
+    cli('logout', '--forget')
     assert not list((Path(tmp)/'state/raisecontext').glob('*.json'))
 print('Portable skill and schema checks passed.')
